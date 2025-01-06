@@ -1,0 +1,26 @@
+{
+  "name": "clover-app",
+  "version": "1.0.0",
+  "description": "clover endpoints",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "dev": "nodemon app.js"
+  },
+  "author": "sathwik boggarapu",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "csvtojson": "^2.0.10",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "jest": "^29.7.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "nodemon": "^3.1.9",
+    "tsc": "^2.0.4",
+    "typescript": "^5.7.2"
+  }
+}
