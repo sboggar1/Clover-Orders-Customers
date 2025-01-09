@@ -8,4 +8,4 @@ npm run dev
 - JavaScript
 
 ## Usage
-- get a orders and transaction excel for a merchant with in timeframe using clover api's
+- get orders and transactions in an Excel for a merchant within a given timeframe using Clover API's
