@@ -5,9 +5,9 @@ export const getOrders = async (req, res) => {
     let orders = [];
     let GET_ORDERS_URL = `${BASE_URL}${API_URLS.GET_ORDERS}`.replace('mid', req.params.mid)
     if(fromDate && toDate){
-        // const fromTime = new Date(fromDate).getTime();
+        const fromTime = new Date(fromDate).getTime();
         const toTime = new Date(toDate).getTime();
-        GET_ORDERS_URL = `${GET_ORDERS_URL}?filter=createdTime<${toTime}&`
+        GET_ORDERS_URL = `${GET_ORDERS_URL}?filter=clientCreatedTime<=${toTime}&filter=clientCreatedTime>=${fromTime}&`
         if(limit){
             GET_ORDERS_URL = `${GET_ORDERS_URL}limit=${limit}&`
         }
@@ -30,33 +30,32 @@ export const getOrders = async (req, res) => {
             'Accept': "application/json"
         }
     });
-   // console.log("result",result);
-    if(fromDate && toDate) {
-        const fromTime = new Date(fromDate).getTime();
-        const toTime = new Date(toDate).getTime();
-       // console.log("fromDate", fromTime , toTime);
-        orders = result.data.elements.filter(order => order.createdTime >= fromTime && order.createdTime <= toTime);
-    } else {
-        orders = result.data.elements;
-    }
+    // console.log("result",result);
+    // if(fromDate && toDate) {
+    //     const fromTime = new Date(fromDate).getTime();
+    //     const toTime = new Date(toDate).getTime();
+    //     orders = result.data.elements.filter(order => order.clientCreatedTime >= fromTime && order.clientCreatedTime <= toTime);
+    // } else {
+    //     orders = result.data.elements;
+    // }
+    orders = result.data.elements;
     const transformOrderData = (order) => ({
         type: order.payType,
-        date: new Date(order.createdTime).toISOString(),
+        date: new Date(order.clientCreatedTime).toISOString(),
         receiptNumber: order.id,
         receiptState: order.state,
-        itemName: order?.lineItems?.elements?.[0]?.name || '',
-        price: order?.lineItems?.elements?.[0]?.price || '',
+        itemElements: order?.lineItems?.elements || [],
         receiptAmount: order.total ? (order.total/100).toFixed(2) : '',
         customerId: order.customers?.elements?.[0]?.id || null,
         employeeId: order.employee?.id || null,
         orderTypeId: order?.orderType?.id || '',
-        payments: order.payments ? order.payments.elements.map((payment) => {
+        payments: (order.payments?.elements || []).map((payment) => {
             return {
                 amount: payment?.amount,
                 paymentMode: payment?.tender?.label || null
             }
             
-        }) : undefined,
+        }),
         paymentMode: order.payments?.elements?.[0]?.tender?.label || '',
         // ...order
     });

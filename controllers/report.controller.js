@@ -58,7 +58,7 @@ export const getReport = async (req, res) => {
         { header: 'Receipt State', key: 'receiptState', width: 10},
         { header: 'Payment Mode', key: 'paymentMode', width: 20 },
         { header: 'Item Name', key: 'itemName', width: 20 },
-        { header: 'Price', key: 'price', width: 20 },
+        { header: 'Price', key: 'itemPrice', width: 20 },
         { header: 'Receipt Amount', key: 'receiptAmount', width: 20 },
         { header: 'First Name', key: 'firstName', width: 20 },
         { header: 'Last Name', key: 'lastName', width: 20 },
@@ -72,7 +72,14 @@ export const getReport = async (req, res) => {
 
     // Add rows
     allOrdersAndCustomerDetails.forEach(data => {
-        worksheet.addRow(data);
+        // worksheet.addRow(data);
+        data.itemElements.forEach(itemElementData => {
+            worksheet.addRow({
+                ...data,
+                itemPrice: itemElementData.price,
+                itemName: itemElementData.name
+            });
+        })
     })
 
     // Save the file
