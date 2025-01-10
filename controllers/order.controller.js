@@ -1,5 +1,10 @@
 import axios from "axios";
 import { API_URLS, BASE_URL } from "../config.js";
+import moment from "moment-timezone";
+
+const timezone = "America/New_York";
+const dateformat = "YYYY-MM-DD hh:mm:ss a z";
+
 export const getOrders = async (req, res) => {
     const { fromDate, toDate, expand, limit } = req.query;
     let orders = [];
@@ -7,7 +12,7 @@ export const getOrders = async (req, res) => {
     if(fromDate && toDate){
         const fromTime = new Date(fromDate).getTime();
         const toTime = new Date(toDate).getTime();
-        GET_ORDERS_URL = `${GET_ORDERS_URL}?filter=clientCreatedTime<=${toTime}&filter=clientCreatedTime>=${fromTime}&`
+        GET_ORDERS_URL = `${GET_ORDERS_URL}?filter=clientCreatedTime<${toTime}&filter=clientCreatedTime>=${fromTime}&filter=state!=open&`
         if(limit){
             GET_ORDERS_URL = `${GET_ORDERS_URL}limit=${limit}&`
         }
@@ -41,7 +46,7 @@ export const getOrders = async (req, res) => {
     orders = result.data.elements;
     const transformOrderData = (order) => ({
         type: order.payType,
-        date: new Date(order.clientCreatedTime).toISOString(),
+        date: moment(order.createdTime).tz(timezone).format(dateformat),
         receiptNumber: order.id,
         receiptState: order.state,
         itemElements: order?.lineItems?.elements || [],

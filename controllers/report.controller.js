@@ -5,6 +5,7 @@ import { getOrders } from "../controllers/order.controller.js";
 import { getCustomers, getCustomersCSV } from "../controllers/customer.controller.js";
 import ExcelJS from 'exceljs';
 export const getReport = async (req, res) => {
+    const fileName = 'Orders.xlsx';
     const {fromDate, toDate, expand,limit} = req.query;
     const getOrdersRequestBody = {
         query: {
@@ -43,12 +44,18 @@ export const getReport = async (req, res) => {
         // customer: allCustomers[orderDetails.customerId] ? allCustomers[orderDetails.customerId] : {}
     }))
 
+    const transactionFileExists = fs.existsSync(fileName);
+    
+    if (!transactionFileExists) {
+        const newWorkbook = new ExcelJS.Workbook();
+        const newWorksheet = newWorkbook.addWorksheet("Transactions");
+        await newWorkbook.xlsx.writeFile(fileName);
+    }
 
     // creating an excel workbook file
     const workbook = new ExcelJS.Workbook();
-
-    // Add a worksheet
-    const worksheet = workbook.addWorksheet('Transactions');
+    const transactionWorkbook = await workbook.xlsx.readFile(fileName)
+    const worksheet = transactionWorkbook.getWorksheet('Transactions');
 
     // Add column headers - [To-Do: add all column details as needed]
     worksheet.columns = [
@@ -76,15 +83,15 @@ export const getReport = async (req, res) => {
         data.itemElements.forEach(itemElementData => {
             worksheet.addRow({
                 ...data,
-                itemPrice: itemElementData.price,
-                itemName: itemElementData.name
+                itemName: itemElementData.name,
+                itemPrice: ((itemElementData.modifications?.elements[0]?.amount || itemElementData.price)/100).toFixed(2)
             });
         })
     })
 
     // Save the file
-    const fileName = 'transactionsOutput.xlsx';
+//    const fileName = 'transactionsOutput.xlsx';
+//    await workbook.xlsx.writeFile(fileName);
     await workbook.xlsx.writeFile(fileName);
-
     res.status(200).send(allOrdersAndCustomerDetails);
 }
