@@ -71,10 +71,10 @@ export const getReport = async (req, res) => {
         { header: 'Last Name', key: 'lastName', width: 20 },
         { header: 'Email', key: 'emailAddress', width: 20 },
         { header: 'Phone Numbers', key: 'phoneNumbers', width: 20 },
-        { header: 'Address', key: 'address1', width: 20 },
+        { header: 'Address', key: 'address', width: 20 },
         { header: 'city', key: 'city', width: 20 },
         { header: 'state', key: 'state', width: 20 },
-        { header: 'zip', key: '27587', width: 20 },
+        { header: 'zip', key: 'zip', width: 20 },
     ];
 
     // Add rows
