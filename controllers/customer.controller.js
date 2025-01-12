@@ -78,14 +78,14 @@ export const getCustomersCSV = async (req, res) => {
 
     const transformCustomerData = (customer) => (
         customersDetails[customer['Customer ID']] = {
-            customerId: customer['Customer ID'] || 'NA',
-            firstName: customer['First Name'] || 'anonyms',
-            lastName: customer['Last Name'] || 'anonyms',
-            address: customer['Address Line 1'],
-            city: customer['City'],
-            state: customer['State / Province'],
+            customerId: customer['Customer ID'] || 'XYKY0ZKBAWW50',
+            firstName: customer['First Name']?.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+            lastName: customer['Last Name']?.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+            address: customer['Address Line 1']?.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+            city: customer['City']?.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+            state: customer['State / Province']?.toUpperCase(),
             zip: customer["Postal / Zip Code"],
-            emailAddress: customer["Email Address"],
+            emailAddress: customer["Email Address"]?.toLowerCase(),
             phoneNumbers: customer["Phone Number"],
         }
     );

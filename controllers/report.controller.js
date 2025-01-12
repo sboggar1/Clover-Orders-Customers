@@ -60,7 +60,8 @@ export const getReport = async (req, res) => {
     // Add column headers - [To-Do: add all column details as needed]
     worksheet.columns = [
         { header: 'Type', key: 'type', width: 10 },
-        { header: 'Date', key: 'date', width: 30 },
+        { header: 'Date', key: 'date', width: 10 },
+        { header: 'Time', key: 'time', width: 10 },
         { header: 'Receipt Number', key: 'receiptNumber', width: 10 },
         { header: 'Receipt State', key: 'receiptState', width: 10},
         { header: 'Payment Mode', key: 'paymentMode', width: 20 },
@@ -81,13 +82,14 @@ export const getReport = async (req, res) => {
     allOrdersAndCustomerDetails.forEach(data => {
         // worksheet.addRow(data);
         data.itemElements.forEach(itemElementData => {
-            worksheet.addRow({
-                ...data,
-                itemName: itemElementData.name,
-                itemPrice: ((itemElementData.modifications?.elements[0]?.amount || itemElementData.price)/100).toFixed(2)
-            });
+            if(!itemElementData.refunded)
+                worksheet.addRow({
+                    ...data,
+                    itemName: itemElementData.name?.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+                    itemPrice: ((itemElementData.modifications?.elements[0]?.amount || itemElementData.price)/100).toFixed(2)
+                });
+            })
         })
-    })
 
     // Save the file
 //    const fileName = 'transactionsOutput.xlsx';

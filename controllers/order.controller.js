@@ -3,7 +3,8 @@ import { API_URLS, BASE_URL } from "../config.js";
 import moment from "moment-timezone";
 
 const timezone = "America/New_York";
-const dateformat = "YYYY-MM-DD hh:mm:ss a z";
+const dateformat = "MM/DD/YYYY";
+const timeFormat = "hh:mm:ss a";
 
 export const getOrders = async (req, res) => {
     const { fromDate, toDate, expand, limit } = req.query;
@@ -47,6 +48,7 @@ export const getOrders = async (req, res) => {
     const transformOrderData = (order) => ({
         type: order.payType,
         date: moment(order.createdTime).tz(timezone).format(dateformat),
+        time: moment(order.createdTime).tz(timezone).format(timeFormat),
         receiptNumber: order.id,
         receiptState: order.state,
         itemElements: order?.lineItems?.elements || [],
